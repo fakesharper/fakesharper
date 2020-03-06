@@ -1,5 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
+import { exec } from 'child_process';
+import { basename } from 'path';
 import * as vscode from 'vscode';
 
 // this method is called when your extension is activated
@@ -14,7 +16,36 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('fakesharper.inspectcode', () => {
-		vscode.window.showInformationMessage('Hello World! [1]');
+		if (!vscode.workspace.rootPath) {
+			return;
+		}
+
+		vscode.workspace.findFiles('**/*.sln', '**/node_modules/**')
+		.then(value => {
+			const items: vscode.QuickPickItem[] = value.map(x => ({
+				label: basename(x.fsPath),
+				description: x.fsPath
+			}));
+
+			vscode.window.showQuickPick(items, {
+				placeHolder: 'Select the solution file'
+			})
+			.then((item: vscode.QuickPickItem | undefined) => {
+				if (!item) {
+					return;
+				}
+
+				vscode.window.showInformationMessage(`Running inspectcode for '${item.label}'`);
+
+				exec(`inspectcode ${item.description} --output=${vscode.workspace.rootPath}\\build\\inspectcode.xml`, (err, stdout, stderr) => {
+					if (err) {
+						vscode.window.showErrorMessage(err.message);
+					} else {
+						vscode.window.showInformationMessage('Inspect code fnished successfully');
+					}
+				});
+			});
+		});
 	});
 
 	context.subscriptions.push(disposable);
