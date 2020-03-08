@@ -21,14 +21,19 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('fakesharper.inspectcode', () => {
-		if (!vscode.workspace.rootPath) {
-			// TODO: Show warning
+		if (!vscode.workspace.workspaceFolders) {
+			vscode.window.showWarningMessage('There is no open folder. You can not use this command.');
 			return;
 		}
 
+		// TODO: Add quick pick for multiple workspace
+
 		vscode.workspace.findFiles('**/*.sln', '**/node_modules/**')
 		.then(value => {
-			// TODO: Show warning if no any file and exit
+			if (value.length === 0) {
+				vscode.window.showWarningMessage('Not found any *.sln file. You can not use this command.');
+				return;
+			}
 
 			const items: vscode.QuickPickItem[] = value.map(x => ({
 				label: path.basename(x.fsPath),
