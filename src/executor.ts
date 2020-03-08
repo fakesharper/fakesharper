@@ -1,5 +1,6 @@
 import { execSync } from 'child_process';
 import * as path from 'path';
+import { EOL } from 'os';
 import * as vscode from 'vscode';
 import { parsefile } from './xmlparser';
 import { restorePath, getIssueSeverity, getIssueRange } from './utils';
@@ -74,11 +75,11 @@ export class InspectCodeExecutor {
 			const uri: vscode.Uri = vscode.Uri.file(fileIssue.file);
 
 			this._dg.set(uri, fileIssue.issues.map(issue => ({
-				message: issue.message,
+				message: issue.message + (issue.issueType.wikiUrl ? EOL + issue.issueType.wikiUrl : ''),
 				range: getIssueRange(issue),
 				severity: getIssueSeverity(issue),
 				code: issue.typeId,
-				source: EXTENSION_NAME,
+				source: EXTENSION_NAME
 			})));
 		}
 	}
