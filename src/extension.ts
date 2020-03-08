@@ -14,8 +14,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 		const inspectcodeExecutor = new InspectCodeExecutor(diagnosticCollection);
 
-		// TODO: Add quick pick for multiple workspace
-
 		vscode.workspace.findFiles('**/*.sln', '**/node_modules/**')
 			.then(value => {
 				if (value.length === 0) {
