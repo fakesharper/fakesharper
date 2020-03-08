@@ -41,21 +41,43 @@ export function parsefile(xmlPath: string): Issue[] {
 		issueTypes.push(issueType);
 	}
 
-	for (let i = 0; i < json.Report.Issues.Project.Issue.length; i++) {
-		const item: any = json.Report.Issues.Project.Issue[i];
-		const issue: Issue = {
-			file: item.attributes["@_File"],
-			line: parseInt(item.attributes["@_Line"]),
-			message: item.attributes["@_Message"],
-			offset: {
-				start: parseInt(item.attributes["@_Offset"].split('-')[0]),
-				end: parseInt(item.attributes["@_Offset"].split('-')[1]),
-			},
-			typeId: item.attributes["@_TypeId"],
+	// TODO: Should add more check and improve this operation
+	if (json.Report.Issues.Project.Issue) {
+		for (let i = 0; i < json.Report.Issues.Project.Issue.length; i++) {
+			const item: any = json.Report.Issues.Project.Issue[i];
+			const issue: Issue = {
+				file: item.attributes["@_File"],
+				line: parseInt(item.attributes["@_Line"]),
+				message: item.attributes["@_Message"],
+				offset: {
+					start: parseInt(item.attributes["@_Offset"].split('-')[0]),
+					end: parseInt(item.attributes["@_Offset"].split('-')[1]),
+				},
+				typeId: item.attributes["@_TypeId"],
 
-			issueType: issueTypes.filter(x => x.id === item.attributes["@_TypeId"])[0]
-		};
-		issues.push(issue);
+				issueType: issueTypes.filter(x => x.id === item.attributes["@_TypeId"])[0]
+			};
+			issues.push(issue);
+		}
+	} else {
+		for (let i = 0; i < json.Report.Issues.Project.length; i++) {
+			for (let j = 0; j < json.Report.Issues.Project[i].Issue.length; j++) {
+				const item: any = json.Report.Issues.Project[i].Issue[j];
+				const issue: Issue = {
+					file: item.attributes["@_File"],
+					line: parseInt(item.attributes["@_Line"]),
+					message: item.attributes["@_Message"],
+					offset: {
+						start: parseInt(item.attributes["@_Offset"].split('-')[0]),
+						end: parseInt(item.attributes["@_Offset"].split('-')[1]),
+					},
+					typeId: item.attributes["@_TypeId"],
+
+					issueType: issueTypes.filter(x => x.id === item.attributes["@_TypeId"])[0]
+				};
+				issues.push(issue);
+			}
+		}
 	}
 
 	return issues;
