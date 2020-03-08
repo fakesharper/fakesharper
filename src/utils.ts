@@ -27,6 +27,7 @@ export function getIssueSeverity(issue: Issue): vscode.DiagnosticSeverity {
 // TODO: Improve this function. First need to read file once, not for all issue...
 export function getIssueRange(issue: Issue): vscode.Range {
 	const data: string = fs.readFileSync(issue.file).toString();
+	const bom: boolean = data.length > 0 && data.charCodeAt(0) === 65279;
 	const line: number = issue.line;
 	let startIndex: number = issue.offset.start;
 	let endIndex: number = issue.offset.end;
@@ -35,6 +36,11 @@ export function getIssueRange(issue: Issue): vscode.Range {
 
 	let index: number = 0;
 
+	if (bom && line !== 1) {
+		// if charset is 'xxx with BOM' first line's length will be +1
+		index--; // BOM
+	}
+
 	for (let i = 0; i < line - 1; i++) {
 		index += lines[i].length + 1;
 	}
@@ -42,5 +48,5 @@ export function getIssueRange(issue: Issue): vscode.Range {
 	startIndex -= index;
 	endIndex -= index;
 
-	return new vscode.Range(line - 1, startIndex + 1, line - 1, endIndex + 1);
+	return new vscode.Range(line - 1, startIndex, line - 1, endIndex);
 }
