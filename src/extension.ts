@@ -4,11 +4,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { Issue, IssueType } from './models';
+import { EXTENSION_NAME } from './constants';
 
 export function activate(context: vscode.ExtensionContext) {
-	const diagnosticCollection = vscode.languages.createDiagnosticCollection('fakesharper');
+	const diagnosticCollection = vscode.languages.createDiagnosticCollection(EXTENSION_NAME);
 
-	let disposable = vscode.commands.registerCommand('fakesharper.inspectcode', () => {
+	let disposable = vscode.commands.registerCommand(`${EXTENSION_NAME}.inspectcode`, () => {
 		if (!vscode.workspace.workspaceFolders) {
 			vscode.window.showWarningMessage('There is no open folder. You can not use this command.');
 			return;
@@ -144,7 +145,7 @@ function updateDiagnostics(collection: vscode.DiagnosticCollection, issues: Issu
 			range: getRange(issue),
 			severity: getSeverity(issue),
 			code: issue.typeId,
-			source: 'fakesharper',
+			source: EXTENSION_NAME,
 		})));
 	}
 }
