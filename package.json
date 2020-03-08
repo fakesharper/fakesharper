@@ -1,13 +1,26 @@
 {
 	"name": "fakesharper",
+	"publisher": "fakesharper",
 	"displayName": "fakesharper",
-	"description": "",
+	"description": "ReSharper features for Visual Studio Code",
 	"version": "0.0.1",
+	"preview": true,
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/fakesharper/fakesharper"
+	},
 	"engines": {
-		"vscode": "^1.42.0"
+		"vscode": "^1.31.0"
 	},
 	"categories": [
-		"Other"
+		"Linters"
+	],
+	"keywords": [
+		".NET",
+		".NET Core",
+		"ASP.NET",
+		"dotnet",
+		"resharper"
 	],
 	"activationEvents": [
 		"onCommand:fakesharper.inspectcode",
