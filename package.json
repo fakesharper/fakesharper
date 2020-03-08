@@ -10,7 +10,9 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:fakesharper.inspectcode"
+		"onCommand:fakesharper.inspectcode",
+		"onCommand:fakesharper.cleandiagnostic",
+		"onCommand:fakesharper.cleandiagnostics"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -18,6 +20,14 @@
 			{
 				"command": "fakesharper.inspectcode",
 				"title": "[fakesharper] Inspect Code"
+			},
+			{
+				"command": "fakesharper.cleandiagnostic",
+				"title": "[fakesharper] Clean Diagnostics"
+			},
+			{
+				"command": "fakesharper.cleandiagnostics",
+				"title": "[fakesharper] Clean All Diagnostics"
 			}
 		]
 	},

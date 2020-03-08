@@ -104,7 +104,15 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 	});
 
-	context.subscriptions.push(disposable);
+	let disposable2 = vscode.commands.registerTextEditorCommand(`${EXTENSION_NAME}.cleandiagnostic`, (textEditor) => {
+		diagnosticCollection.delete(textEditor.document.uri);
+	});
+
+	let disposable3 = vscode.commands.registerCommand(`${EXTENSION_NAME}.cleandiagnostics`, () => {
+		diagnosticCollection.clear();
+	});
+
+	context.subscriptions.push(disposable, disposable2, disposable3);
 }
 
 function updateDiagnostics(collection: vscode.DiagnosticCollection, issues: Issue[]): void {
