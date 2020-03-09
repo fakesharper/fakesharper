@@ -1,5 +1,7 @@
 # fakesharper
 
+![fakesharper](https://raw.githubusercontent.com/fakesharper/fakesharper/master/assets/icon.png)
+
 This is vscode extension for (free) ReSharper.
 
 ![example](https://raw.githubusercontent.com/fakesharper/fakesharper/master/assets/example.gif)
