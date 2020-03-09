@@ -2,6 +2,8 @@
 
 This is vscode extension for (free) ReSharper.
 
+![example](https://raw.githubusercontent.com/fakesharper/fakesharper/master/assets/example.gif)
+
 > Warning: If your project is too large, this command can work slowly, because of cli tool. This is why we made this extension as command.
 
 ## FAQ
