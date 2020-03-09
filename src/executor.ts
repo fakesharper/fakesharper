@@ -1,45 +1,54 @@
-import { execSync } from 'child_process';
-import * as path from 'path';
+import { exec } from 'child_process';
 import { EOL } from 'os';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import { parsefile } from './xmlparser';
 import { restorePath, getIssueSeverity, getIssueRange } from './utils';
 import { Issue } from './models';
 import { EXTENSION_NAME } from './constants';
 
-/**
- * Executes the `inspectcode` command on cli
- * @param filePath sln or project file path
- * @param output xml file path to create issues
- */
-export function executeInspectCode(filePath: string, output: string) {
-	execSync(`inspectcode ${filePath} --output=${output}`);
-}
-
 export class InspectCodeExecutor {
-	private _dg: vscode.DiagnosticCollection;
+	private readonly _dg: vscode.DiagnosticCollection;
+	private readonly _statusBarItem: vscode.StatusBarItem;
 
-	constructor(dg: vscode.DiagnosticCollection) {
+	constructor(dg: vscode.DiagnosticCollection, statusBarItem: vscode.StatusBarItem) {
 		this._dg = dg;
+		this._statusBarItem = statusBarItem;
 	}
 
-	run(slnPath: string, xmlPath: string, diagnosticCollection: vscode.DiagnosticCollection): void {
-		const slnName: string = path.basename(slnPath);
-		const slnDirPath = path.dirname(slnPath);
+	run(slnPath: string, xmlPath: string): void {
+		this._statusBarItem.text = "$(sync~spin) Inspect Code";
+		this._statusBarItem.tooltip = "Inspect Code command is running";
+		this._statusBarItem.show();
 
+		this.executeInspectCode(slnPath, xmlPath);
+	};
+
+	executeInspectCode(slnPath: string, xmlPath: string): void {
+		exec(`inspectcode ${slnPath} --output=${xmlPath}`, (error, stdout) => {
+			if (error) {
+				this._statusBarItem.hide();
+				vscode.window.showErrorMessage(error.message);
+				return;
+			}
+
+			this.doThings(slnPath, xmlPath);
+		});
+	}
+
+	doThings(slnPath: string, xmlPath: string): void {
 		try {
-			// TODO: Log sln name
-			executeInspectCode(slnPath, xmlPath);
+			const slnDirPath = path.dirname(slnPath);
+
 			const issues = parsefile(xmlPath);
 			restorePath(slnDirPath, issues);
 			this.updateDiagnostics(issues);
-			vscode.window.showInformationMessage('Inspect code fnished successfully');
-		} catch (ex) {
-			console.error(ex);
-			vscode.window.showErrorMessage(`${ex?.message || ex}`);
+			this._statusBarItem.hide();
+		} catch (err) {
+			this._statusBarItem.hide();
+			vscode.window.showErrorMessage(`${err?.message || err}`);
 		}
-	};
-
+	}
 
 	updateDiagnostics(issues: Issue[]): void {
 		this._dg.clear();

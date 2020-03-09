@@ -6,13 +6,15 @@ import { InspectCodeExecutor } from './executor';
 export function activate(context: vscode.ExtensionContext) {
 	const diagnosticCollection = vscode.languages.createDiagnosticCollection(EXTENSION_NAME);
 
+	const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+
 	let disposable = vscode.commands.registerCommand(`${EXTENSION_NAME}.inspectcode`, () => {
 		if (!vscode.workspace.workspaceFolders) {
 			vscode.window.showWarningMessage('There is no open folder. You can not use this command.');
 			return;
 		}
 
-		const inspectcodeExecutor = new InspectCodeExecutor(diagnosticCollection);
+		const inspectcodeExecutor = new InspectCodeExecutor(diagnosticCollection, statusBarItem);
 
 		vscode.workspace.findFiles('**/*.sln', '**/node_modules/**')
 			.then(value => {
@@ -31,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
 				if (items.length === 1) {
 					const slnPath: string = items[0].description || '';
 
-					inspectcodeExecutor.run(slnPath, xmlPath, diagnosticCollection);
+					inspectcodeExecutor.run(slnPath, xmlPath);
 				} else {
 					vscode.window.showQuickPick(items, { placeHolder: 'Select the solution file' })
 						.then((item: vscode.QuickPickItem | undefined) => {
@@ -41,7 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 							const slnPath: string = item.description || '';
 
-							inspectcodeExecutor.run(slnPath, xmlPath, diagnosticCollection);
+							inspectcodeExecutor.run(slnPath, xmlPath);
 						});
 				}
 			});
@@ -55,7 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
 		diagnosticCollection.clear();
 	});
 
-	context.subscriptions.push(disposable, disposable2, disposable3);
+	context.subscriptions.push(disposable, disposable2, disposable3, statusBarItem);
 }
 
 export function deactivate() { }
