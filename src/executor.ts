@@ -104,3 +104,49 @@ export class InspectCodeExecutor {
 		});
 	}
 }
+
+export class CleanupCodeExecutor {
+	public constructor(
+		private readonly statusBarItem: vscode.StatusBarItem
+	) { }
+
+	private showStatusBarItem() {
+		this.statusBarItem.text = "$(sync~spin) Cleanup Code";
+		this.statusBarItem.tooltip = "Cleanup Code command is running";
+		this.statusBarItem.show();
+	}
+
+	private hideStatusBarItem() {
+		this.statusBarItem.text = "fakesharper";
+		this.statusBarItem.tooltip = undefined;
+		this.statusBarItem.hide();
+	}
+
+	private executeCleanupCode(filePath: string): void {
+		exec(`cleanupcode ${filePath}`, (error, stdout) => {
+			if (error) {
+				vscode.window.showErrorMessage(error.message);
+			}
+
+			this.hideStatusBarItem();
+		});
+	}
+
+	public run() {
+		selectSolutionFile(filePath => {
+			if (!filePath) {
+				vscode.window.showWarningMessage(`Not found any '*.sln' file.`);
+				return;
+			}
+
+			vscode.window.showQuickPick(['No. Do not change my codes.', 'Yes. Cleanup my codes.'], {
+				placeHolder: 'WARNING! Can i change your codes?'
+			}).then(value => {
+				if (value && value.startsWith('Yes')) {
+					this.showStatusBarItem();
+					this.executeCleanupCode(filePath);
+				}
+			});
+		});
+	}
+}

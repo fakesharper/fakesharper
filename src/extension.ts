@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { EXTENSION_NAME } from './constants';
-import { InspectCodeExecutor } from './executor';
+import { CleanupCodeExecutor, InspectCodeExecutor } from './executor';
 
 export function activate(context: vscode.ExtensionContext) {
 	const diagnosticCollection = vscode.languages.createDiagnosticCollection(EXTENSION_NAME);
@@ -19,7 +19,17 @@ export function activate(context: vscode.ExtensionContext) {
 		diagnosticCollection.clear();
 	});
 
-	context.subscriptions.push(disposable, disposable2, disposable3, statusBarItem);
+	let disposable4 = vscode.commands.registerCommand(`${EXTENSION_NAME}.cleanupcode`, () => {
+		new CleanupCodeExecutor(statusBarItem).run();
+	});
+
+	context.subscriptions.push(
+		statusBarItem,
+		disposable,
+		disposable2,
+		disposable3,
+		disposable4
+	);
 }
 
 export function deactivate() { }
