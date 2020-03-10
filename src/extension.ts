@@ -1,4 +1,3 @@
-import * as path from 'path';
 import * as vscode from 'vscode';
 import { EXTENSION_NAME } from './constants';
 import { InspectCodeExecutor } from './executor';
@@ -9,44 +8,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
 
 	let disposable = vscode.commands.registerCommand(`${EXTENSION_NAME}.inspectcode`, () => {
-		if (!vscode.workspace.workspaceFolders) {
-			vscode.window.showWarningMessage('There is no open folder. You can not use this command.');
-			return;
-		}
-
-		const inspectcodeExecutor = new InspectCodeExecutor(diagnosticCollection, statusBarItem);
-
-		vscode.workspace.findFiles('**/*.sln', '**/node_modules/**')
-			.then(value => {
-				if (value.length === 0) {
-					vscode.window.showWarningMessage('Not found any *.sln file. You can not use this command.');
-					return;
-				}
-
-				const xmlPath = path.join(vscode.workspace.rootPath || '', 'build', 'inspectcode.xml');
-
-				const items: vscode.QuickPickItem[] = value.map(x => ({
-					label: path.basename(x.fsPath),
-					description: x.fsPath
-				}));
-
-				if (items.length === 1) {
-					const slnPath: string = items[0].description || '';
-
-					inspectcodeExecutor.run(slnPath, xmlPath);
-				} else {
-					vscode.window.showQuickPick(items, { placeHolder: 'Select the solution file' })
-						.then((item: vscode.QuickPickItem | undefined) => {
-							if (!item) {
-								return;
-							}
-
-							const slnPath: string = item.description || '';
-
-							inspectcodeExecutor.run(slnPath, xmlPath);
-						});
-				}
-			});
+		new InspectCodeExecutor(statusBarItem, diagnosticCollection).run();
 	});
 
 	let disposable2 = vscode.commands.registerTextEditorCommand(`${EXTENSION_NAME}.cleandiagnostic`, (textEditor) => {

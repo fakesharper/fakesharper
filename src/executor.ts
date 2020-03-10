@@ -2,56 +2,53 @@ import { exec } from 'child_process';
 import { EOL } from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { parsefile } from './xmlparser';
-import { restorePath, getIssueSeverity, getIssueRange } from './utils';
-import { Issue } from './models';
 import { EXTENSION_NAME } from './constants';
+import { Issue } from './models';
+import { restorePath, getIssueSeverity, getIssueRange } from './utils';
+import { selectSolutionFile } from './workspace';
+import { parsefile } from './xmlparser';
 
 export class InspectCodeExecutor {
-	private readonly _dg: vscode.DiagnosticCollection;
-	private readonly _statusBarItem: vscode.StatusBarItem;
+	constructor(
+		private readonly statusBarItem: vscode.StatusBarItem,
+		private readonly diagnosticCollection: vscode.DiagnosticCollection
+	) { }
 
-	constructor(dg: vscode.DiagnosticCollection, statusBarItem: vscode.StatusBarItem) {
-		this._dg = dg;
-		this._statusBarItem = statusBarItem;
-	}
-
-	run(slnPath: string, xmlPath: string): void {
-		this._statusBarItem.text = "$(sync~spin) Inspect Code";
-		this._statusBarItem.tooltip = "Inspect Code command is running";
-		this._statusBarItem.show();
-
-		this.executeInspectCode(slnPath, xmlPath);
+	private showStatusBarItem(): void {
+		this.statusBarItem.text = "$(sync~spin) Inspect Code";
+		this.statusBarItem.tooltip = "Inspect Code command is running";
+		this.statusBarItem.show();
 	};
 
-	executeInspectCode(slnPath: string, xmlPath: string): void {
-		exec(`inspectcode ${slnPath} --output=${xmlPath}`, (error, stdout) => {
-			if (error) {
-				this._statusBarItem.hide();
-				vscode.window.showErrorMessage(error.message);
-				return;
-			}
+	private hideStatusBarItem(): void {
+		this.statusBarItem.text = "fakesharper";
+		this.statusBarItem.tooltip = undefined;
+		this.statusBarItem.hide();
+	}
 
-			this.doThings(slnPath, xmlPath);
+	private executeInspectCode(filePath: string, xmlPath: string): void {
+		exec(`inspectcode ${filePath} --output=${xmlPath}`, (error, stdout) => {
+			if (error) {
+				this.statusBarItem.hide();
+				vscode.window.showErrorMessage(error.message);
+			} else {
+				const dirPath = path.dirname(filePath);
+
+				try {
+					const issues = parsefile(xmlPath);
+					restorePath(dirPath, issues);
+					this.updateDiagnostics(issues);
+				} catch (err) {
+					vscode.window.showErrorMessage(`${err?.message || err}`);
+				} finally {
+					this.hideStatusBarItem();
+				}
+			}
 		});
 	}
 
-	doThings(slnPath: string, xmlPath: string): void {
-		try {
-			const slnDirPath = path.dirname(slnPath);
-
-			const issues = parsefile(xmlPath);
-			restorePath(slnDirPath, issues);
-			this.updateDiagnostics(issues);
-			this._statusBarItem.hide();
-		} catch (err) {
-			this._statusBarItem.hide();
-			vscode.window.showErrorMessage(`${err?.message || err}`);
-		}
-	}
-
-	updateDiagnostics(issues: Issue[]): void {
-		this._dg.clear();
+	private updateDiagnostics(issues: Issue[]): void {
+		this.diagnosticCollection.clear();
 
 		type FileIssue = {
 			file: string;
@@ -83,7 +80,7 @@ export class InspectCodeExecutor {
 
 			const uri: vscode.Uri = vscode.Uri.file(fileIssue.file);
 
-			this._dg.set(uri, fileIssue.issues.map(issue => ({
+			this.diagnosticCollection.set(uri, fileIssue.issues.map(issue => ({
 				message: issue.message + (issue.issueType.wikiUrl ? EOL + issue.issueType.wikiUrl : ''),
 				range: getIssueRange(issue),
 				severity: getIssueSeverity(issue),
@@ -91,5 +88,19 @@ export class InspectCodeExecutor {
 				source: EXTENSION_NAME
 			})));
 		}
+	}
+
+	public run(): void {
+		selectSolutionFile(filePath => {
+			if (!filePath) {
+				vscode.window.showWarningMessage(`Not found any '*.sln' file.`);
+				return;
+			}
+
+			const xmlPath = path.join(path.dirname(filePath), 'inspectcode.xml');
+
+			this.showStatusBarItem();
+			this.executeInspectCode(filePath, xmlPath);
+		});
 	}
 }
