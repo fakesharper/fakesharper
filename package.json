@@ -26,10 +26,12 @@
 		"resharper"
 	],
 	"activationEvents": [
+		"onLanguage:csharp",
 		"onCommand:fakesharper.inspectcode",
 		"onCommand:fakesharper.cleandiagnostic",
 		"onCommand:fakesharper.cleandiagnostics",
-		"onCommand:fakesharper.cleanupcode"
+		"onCommand:fakesharper.cleanupcode",
+		"onCommand:fakesharper.refreshdiagnostics"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -49,6 +51,10 @@
 			{
 				"command": "fakesharper.cleanupcode",
 				"title": "[fakesharper] Cleanup Code"
+			},
+			{
+				"command": "fakesharper.refreshdiagnostics",
+				"title": "[fakesharper] Refresh Diagnostics"
 			}
 		]
 	},
