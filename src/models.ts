@@ -21,3 +21,8 @@ export type Issue = {
 
 	issueType: IssueType;
 };
+
+export type File = {
+	path: string;
+	issues: Issue[];
+};

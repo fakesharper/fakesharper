@@ -3,8 +3,9 @@ import { EOL } from "os";
 import * as path from "path";
 import * as vscode from "vscode";
 import { EXTENSION_NAME, INSPECTION_FILENAME } from "./constants";
-import { Issue } from "./models";
-import { getIssueRange, getIssueSeverity, restorePath } from "./utils";
+import { readFileSync } from './file';
+import { File } from "./models";
+import { getIssueRange, getIssueSeverity, restoreRelativePaths } from "./utils";
 import { findFiles } from './workspace';
 import { parsefile } from "./xmlparser";
 
@@ -19,58 +20,32 @@ export function reloadAllDiagnostics(diagnosticCollection: vscode.DiagnosticColl
 		});
 }
 
-export function loadDiagnostics(workspacePath: string, diagnosticCollection: vscode.DiagnosticCollection): void {
-	const xmlPath = path.join(workspacePath, INSPECTION_FILENAME);
+export function loadDiagnostics(basePath: string, diagnosticCollection: vscode.DiagnosticCollection): void {
+	const xmlPath = path.join(basePath, INSPECTION_FILENAME);
 
 	if (!fs.existsSync(xmlPath)) {
 		return;
 	}
 
 	try {
-		const issues = parsefile(xmlPath);
-		restorePath(workspacePath, issues);
-		updateDiagnostics(issues, diagnosticCollection);
+		const files: File[] = parsefile(xmlPath);
+		restoreRelativePaths(basePath, files);
+		updateDiagnostics(files, diagnosticCollection);
 	} catch (err) {
 		vscode.window.showErrorMessage(`${err?.message || err}`);
 	}
 }
 
-export function updateDiagnostics(issues: Issue[], diagnosticCollection: vscode.DiagnosticCollection): void {
-	diagnosticCollection.clear();
+export function updateDiagnostics(files: File[], diagnosticCollection: vscode.DiagnosticCollection): void {
+	for (let i = 0; i < files.length; i++) {
+		const file: File = files[i];
 
-	type FileIssue = {
-		file: string;
-		issues: Issue[];
-	};
+		const data: string = readFileSync(file.path);
+		const uri: vscode.Uri = vscode.Uri.file(file.path);
 
-	const fileIssues: FileIssue[] = [];
-
-	for (let i = 0; i < issues.length; i++) {
-		const issue: Issue = issues[i];
-		let fileIssueExists: boolean = false;
-		for (let j = 0; j < fileIssues.length; j++) {
-			const fileIssue: FileIssue = fileIssues[j];
-
-			if (issue.file === fileIssue.file) {
-				fileIssue.issues.push(issue);
-				fileIssueExists = true;
-				break;
-			}
-		}
-
-		if (!fileIssueExists) {
-			fileIssues.push({ file: issue.file, issues: [issue] });
-		}
-	}
-
-	for (let i = 0; i < fileIssues.length; i++) {
-		const fileIssue: FileIssue = fileIssues[i];
-
-		const uri: vscode.Uri = vscode.Uri.file(fileIssue.file);
-
-		diagnosticCollection.set(uri, fileIssue.issues.map(issue => ({
+		diagnosticCollection.set(uri, file.issues.map(issue => ({
 			message: issue.message + (issue.issueType.wikiUrl ? EOL + issue.issueType.wikiUrl : ''),
-			range: getIssueRange(issue),
+			range: getIssueRange(data, issue),
 			severity: getIssueSeverity(issue),
 			code: issue.typeId,
 			source: EXTENSION_NAME

@@ -1,20 +1,22 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
-import * as file from './file';
-import { Issue } from "./models";
+import { File, Issue } from "./models";
 
 /**
- * File paths in xml files are relative format. This function convert relative paths to absolute paths.
- * @param slnDirPath sln file directory path
- * @param issues Issue list
+ * Converts relative path to absolute path. The file path format is relative in xml.
+ * @param basePath *.sln file's directory path.
+ * @param files File model array.
  */
-export function restorePath(slnDirPath: string, issues: Issue[]) {
-	for (let i = 0; i < issues.length; i++) {
-		const issue: Issue = issues[i];
-		issue.file = path.join(slnDirPath, issue.file);
-	}
+export function restoreRelativePaths(basePath: string, files: File[]): void {
+	files.forEach(file => {
+		file.path = path.join(basePath, file.path);
+	});
 }
 
+/**
+ * Get DiagnosticSeverity from Issue model.
+ * @param issue Issue model.
+ */
 export function getIssueSeverity(issue: Issue): vscode.DiagnosticSeverity {
 	switch (issue.issueType.severity) {
 		case 'ERROR': return vscode.DiagnosticSeverity.Error;
@@ -25,10 +27,13 @@ export function getIssueSeverity(issue: Issue): vscode.DiagnosticSeverity {
 	}
 }
 
-// TODO: Improve this function. First need to read file once, not for all issue...
-export function getIssueRange(issue: Issue): vscode.Range {
-	const data: string = file.readFileSync(issue.file);
-	const line: number = issue.line;
+/**
+ * Creates Range from Issue.
+ * @param data File data string.
+ * @param issue Issue model.
+ */
+export function getIssueRange(data: string, issue: Issue): vscode.Range {
+	const lineIndex: number = issue.line - 1;
 	let startIndex: number = issue.offset.start;
 	let endIndex: number = issue.offset.end;
 
@@ -36,12 +41,12 @@ export function getIssueRange(issue: Issue): vscode.Range {
 
 	let index: number = 0;
 
-	for (let i = 0; i < line - 1; i++) {
+	for (let i = 0; i < lineIndex; i++) {
 		index += lines[i].length + 1;
 	}
 
 	startIndex -= index;
 	endIndex -= index;
 
-	return new vscode.Range(line - 1, startIndex, line - 1, endIndex);
+	return new vscode.Range(lineIndex, startIndex, lineIndex, endIndex);
 }

@@ -1,14 +1,14 @@
 import * as fxp from 'fast-xml-parser';
 import * as path from 'path';
 import * as file from './file';
-import { IssueType, Issue } from "./models";
+import { IssueType, Issue, File } from "./models";
 
 /**
- * Returns Issue array in xml file
- * @param xmlPath xml string data
+ * Parses xml file data to File model array
+ * @param filePath Xml file path
  */
-export function parsefile(xmlPath: string): Issue[] {
-	const xml: string = file.readFileSync(xmlPath);
+export function parsefile(filePath: string): File[] {
+	const xml: string = file.readFileSync(filePath);
 
 	const json: any = fxp.parse(xml, {
 		attrNodeName: 'attributes',
@@ -16,8 +16,8 @@ export function parsefile(xmlPath: string): Issue[] {
 		parseAttributeValue: true
 	});
 
+	const fileIssueLists: File[] = [];
 	const issueTypes: IssueType[] = [];
-	const issues: Issue[] = [];
 
 	for (let i = 0; i < json.Report.IssueTypes.IssueType.length; i++) {
 		const item: any = json.Report.IssueTypes.IssueType[i];
@@ -32,44 +32,51 @@ export function parsefile(xmlPath: string): Issue[] {
 		issueTypes.push(issueType);
 	}
 
-	// TODO: Should add more check and improve this operation
+	const addIssue = function (item: any): void {
+		const issue: Issue = {
+			file: item.attributes["@_File"].replace(/\\/g, path.sep),
+			line: parseInt(item.attributes["@_Line"]),
+			message: item.attributes["@_Message"],
+			offset: {
+				start: parseInt(item.attributes["@_Offset"].split('-')[0]),
+				end: parseInt(item.attributes["@_Offset"].split('-')[1]),
+			},
+			typeId: item.attributes["@_TypeId"],
+
+			issueType: issueTypes.filter(x => x.id === item.attributes["@_TypeId"])[0]
+		};
+
+		let added: boolean = false;
+
+		for (let i = 0; i < fileIssueLists.length; i++) {
+			if (fileIssueLists[i].path === issue.file) {
+				fileIssueLists[i].issues.push(issue);
+				added = true;
+				break;
+			}
+		}
+
+		if (!added) {
+			fileIssueLists.push({
+				path: issue.file,
+				issues: [issue]
+			});
+		}
+	};
+
 	if (json.Report.Issues.Project.Issue) {
 		for (let i = 0; i < json.Report.Issues.Project.Issue.length; i++) {
 			const item: any = json.Report.Issues.Project.Issue[i];
-			const issue: Issue = {
-				file: item.attributes["@_File"].replace(/\\/g, path.sep),
-				line: parseInt(item.attributes["@_Line"]),
-				message: item.attributes["@_Message"],
-				offset: {
-					start: parseInt(item.attributes["@_Offset"].split('-')[0]),
-					end: parseInt(item.attributes["@_Offset"].split('-')[1]),
-				},
-				typeId: item.attributes["@_TypeId"],
-
-				issueType: issueTypes.filter(x => x.id === item.attributes["@_TypeId"])[0]
-			};
-			issues.push(issue);
+			addIssue(item);
 		}
 	} else {
 		for (let i = 0; i < json.Report.Issues.Project.length; i++) {
 			for (let j = 0; j < json.Report.Issues.Project[i].Issue.length; j++) {
 				const item: any = json.Report.Issues.Project[i].Issue[j];
-				const issue: Issue = {
-					file: item.attributes["@_File"].replace(/\\/g, path.sep),
-					line: parseInt(item.attributes["@_Line"]),
-					message: item.attributes["@_Message"],
-					offset: {
-						start: parseInt(item.attributes["@_Offset"].split('-')[0]),
-						end: parseInt(item.attributes["@_Offset"].split('-')[1]),
-					},
-					typeId: item.attributes["@_TypeId"],
-
-					issueType: issueTypes.filter(x => x.id === item.attributes["@_TypeId"])[0]
-				};
-				issues.push(issue);
+				addIssue(item);
 			}
 		}
 	}
 
-	return issues;
+	return fileIssueLists;
 }
