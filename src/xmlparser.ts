@@ -1,22 +1,14 @@
-import * as fs from 'fs';
 import * as fxp from 'fast-xml-parser';
 import * as path from 'path';
+import * as file from './file';
 import { IssueType, Issue } from "./models";
-
-/**
- * Returns string of xml file
- * @param path xml file path
- */
-export function readXml(path: string): string {
-	return fs.readFileSync(path).toString();
-}
 
 /**
  * Returns Issue array in xml file
  * @param xmlPath xml string data
  */
 export function parsefile(xmlPath: string): Issue[] {
-	const xml: string = readXml(xmlPath);
+	const xml: string = file.readFileSync(xmlPath);
 
 	const json: any = fxp.parse(xml, {
 		attrNodeName: 'attributes',

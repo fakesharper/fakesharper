@@ -1,6 +1,6 @@
-import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
+import * as file from './file';
 import { Issue } from "./models";
 
 /**
@@ -27,8 +27,7 @@ export function getIssueSeverity(issue: Issue): vscode.DiagnosticSeverity {
 
 // TODO: Improve this function. First need to read file once, not for all issue...
 export function getIssueRange(issue: Issue): vscode.Range {
-	const data: string = fs.readFileSync(issue.file).toString();
-	const bom: boolean = data.length > 0 && data.charCodeAt(0) === 65279;
+	const data: string = file.readFileSync(issue.file);
 	const line: number = issue.line;
 	let startIndex: number = issue.offset.start;
 	let endIndex: number = issue.offset.end;
@@ -39,10 +38,6 @@ export function getIssueRange(issue: Issue): vscode.Range {
 
 	for (let i = 0; i < line - 1; i++) {
 		index += lines[i].length + 1;
-
-		if (bom && i === 0) {
-			index--;
-		}
 	}
 
 	startIndex -= index;
