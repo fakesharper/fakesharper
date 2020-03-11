@@ -46,7 +46,7 @@ export function parsefile(xmlPath: string): Issue[] {
 		for (let i = 0; i < json.Report.Issues.Project.Issue.length; i++) {
 			const item: any = json.Report.Issues.Project.Issue[i];
 			const issue: Issue = {
-				file: item.attributes["@_File"].replace(/\\/g, "/"),
+				file: item.attributes["@_File"].replace(/\\/g, path.sep),
 				line: parseInt(item.attributes["@_Line"]),
 				message: item.attributes["@_Message"],
 				offset: {
@@ -64,7 +64,7 @@ export function parsefile(xmlPath: string): Issue[] {
 			for (let j = 0; j < json.Report.Issues.Project[i].Issue.length; j++) {
 				const item: any = json.Report.Issues.Project[i].Issue[j];
 				const issue: Issue = {
-					file: item.attributes["@_File"].replace(/\\/g, "/"),
+					file: item.attributes["@_File"].replace(/\\/g, path.sep),
 					line: parseInt(item.attributes["@_Line"]),
 					message: item.attributes["@_Message"],
 					offset: {
