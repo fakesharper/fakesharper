@@ -1,13 +1,9 @@
 import { exec } from 'child_process';
-import { EOL } from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { EXTENSION_NAME, INSPECTION_FILENAME } from './constants';
-import { Issue } from './models';
-import { restorePath, getIssueSeverity, getIssueRange } from './utils';
 import { selectSolutionFile } from './workspace';
-import { parsefile } from './xmlparser';
-import { runDiagnostics } from './diagnostics';
+import { loadDiagnostics } from './diagnostics';
 
 export class InspectCodeExecutor {
 	constructor(
@@ -22,7 +18,7 @@ export class InspectCodeExecutor {
 	};
 
 	private hideStatusBarItem(): void {
-		this.statusBarItem.text = "fakesharper";
+		this.statusBarItem.text = EXTENSION_NAME;
 		this.statusBarItem.tooltip = undefined;
 		this.statusBarItem.hide();
 	}
@@ -35,7 +31,8 @@ export class InspectCodeExecutor {
 			} else {
 				const dirPath = path.dirname(filePath);
 
-				runDiagnostics(dirPath, this.diagnosticCollection);
+				this.diagnosticCollection.clear();
+				loadDiagnostics(dirPath, this.diagnosticCollection);
 				this.hideStatusBarItem();
 			}
 		});
@@ -68,7 +65,7 @@ export class CleanupCodeExecutor {
 	}
 
 	private hideStatusBarItem() {
-		this.statusBarItem.text = "fakesharper";
+		this.statusBarItem.text = EXTENSION_NAME;
 		this.statusBarItem.tooltip = undefined;
 		this.statusBarItem.hide();
 	}

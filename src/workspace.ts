@@ -1,13 +1,17 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 
+export function findFiles(glob: vscode.GlobPattern, maxResults?: number): Thenable<vscode.Uri[]> {
+	return vscode.workspace.findFiles(glob, '**/node_modules/**', maxResults);
+}
+
 export function selectFile(glob: vscode.GlobPattern, onSelect: ((path: string | undefined) => void)): void {
 	if (!vscode.workspace.workspaceFolders) {
 		vscode.window.showWarningMessage('There is no open folder.');
 		return;
 	}
 
-	vscode.workspace.findFiles(glob, '**/node_modules/**')
+	findFiles(glob)
 		.then(value => {
 			if (value.length === 0) {
 				onSelect(undefined);

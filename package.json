@@ -3,7 +3,7 @@
 	"publisher": "fakesharper",
 	"displayName": "fakesharper",
 	"description": "ReSharper features for Visual Studio Code",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"preview": true,
 	"icon": "assets/icon.png",
 	"repository": {
@@ -14,6 +14,7 @@
 		"vscode": "^1.31.0"
 	},
 	"categories": [
+		"Formatters",
 		"Linters"
 	],
 	"keywords": [
@@ -26,12 +27,11 @@
 		"resharper"
 	],
 	"activationEvents": [
-		"onLanguage:csharp",
 		"onCommand:fakesharper.inspectcode",
-		"onCommand:fakesharper.cleandiagnostic",
 		"onCommand:fakesharper.cleandiagnostics",
+		"onCommand:fakesharper.cleanalldiagnostics",
 		"onCommand:fakesharper.cleanupcode",
-		"onCommand:fakesharper.refreshdiagnostics"
+		"onCommand:fakesharper.reloaddiagnostics"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -41,11 +41,11 @@
 				"title": "[fakesharper] Inspect Code"
 			},
 			{
-				"command": "fakesharper.cleandiagnostic",
+				"command": "fakesharper.cleandiagnostics",
 				"title": "[fakesharper] Clean Diagnostics"
 			},
 			{
-				"command": "fakesharper.cleandiagnostics",
+				"command": "fakesharper.cleanalldiagnostics",
 				"title": "[fakesharper] Clean All Diagnostics"
 			},
 			{
@@ -53,8 +53,8 @@
 				"title": "[fakesharper] Cleanup Code"
 			},
 			{
-				"command": "fakesharper.refreshdiagnostics",
-				"title": "[fakesharper] Refresh Diagnostics"
+				"command": "fakesharper.reloaddiagnostics",
+				"title": "[fakesharper] Reload Diagnostics"
 			}
 		]
 	},

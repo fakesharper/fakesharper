@@ -17,20 +17,19 @@ This is vscode extension for (free) ReSharper.
   * Add folder to environment PATH variable.
   * Check if installed correctly by `inspectcode --version` command on command line.
 
+## Features
+
+* `Inspect Code`: Inspecting and linting.
+* `Clean Diagnostics`: Clean diagnostics on current editor.
+* `Clean All Diagnostics`: Clean all diagnostics on workspace.
+* `Reload Diagnostics`: Show diagnostics on editor from all found inspectcode.xml files.
+* `Cleanup Code`: Format and cleanup code.
+
 ## FAQ
 
 ### Is ReSharper free?
 
 **Yes!** We use free tool of [JetBrains](https://www.jetbrains.com/) [ReSharper](https://www.jetbrains.com/resharper/) called [ReSharper Command Line](https://www.jetbrains.com/resharper/features/command-line.html) tool for this extension.
-
-## Release Notes
-
-### 1.0.0
-
-* Added `Inspect Code` command to inspecting.
-* Added `Clean Diagnostics` command to clean diagnostics on current editor.
-* Added `Clean All Diagnostics` command to clean all diagnostics on workspace.
-* Added `Cleanup Code` command to format your codes.
 
 -----------------------------------------------------------------------------------------------------------
 

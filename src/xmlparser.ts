@@ -13,8 +13,7 @@ export function readXml(path: string): string {
 
 /**
  * Returns Issue array in xml file
- * @param basePath *.sln or *.csproj file directory path
- * @param xml xml string data
+ * @param xmlPath xml string data
  */
 export function parsefile(xmlPath: string): Issue[] {
 	const xml: string = readXml(xmlPath);

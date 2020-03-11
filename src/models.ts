@@ -3,7 +3,7 @@ export type IssueType = {
 	category: string;
 	categoryId: string;
 	description: string;
-	severity: 'ERROR' | 'HINT' | 'SUGGESTION' | 'WARNING';
+	severity: 'ERROR' | 'HINT' | 'INFORMATION' | 'SUGGESTION' | 'WARNING';
 	wikiUrl: string | undefined;
 };
 

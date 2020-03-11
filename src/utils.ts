@@ -19,6 +19,7 @@ export function getIssueSeverity(issue: Issue): vscode.DiagnosticSeverity {
 	switch (issue.issueType.severity) {
 		case 'ERROR': return vscode.DiagnosticSeverity.Error;
 		case 'HINT': return vscode.DiagnosticSeverity.Hint;
+		case 'INFORMATION': return vscode.DiagnosticSeverity.Information;
 		case 'SUGGESTION': return vscode.DiagnosticSeverity.Information;
 		case 'WARNING': return vscode.DiagnosticSeverity.Warning;
 	}
@@ -36,13 +37,12 @@ export function getIssueRange(issue: Issue): vscode.Range {
 
 	let index: number = 0;
 
-	if (bom && line !== 1) {
-		// if charset is 'xxx with BOM' first line's length will be +1
-		index--; // BOM
-	}
-
 	for (let i = 0; i < line - 1; i++) {
 		index += lines[i].length + 1;
+
+		if (bom && i === 0) {
+			index--;
+		}
 	}
 
 	startIndex -= index;
