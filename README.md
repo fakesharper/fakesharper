@@ -1,8 +1,8 @@
 # fakesharper
 
+![CI](https://github.com/fakesharper/fakesharper/workflows/CI/badge.svg)
 [![marketplace](https://img.shields.io/visual-studio-marketplace/v/fakesharper.fakesharper?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=fakesharper.fakesharper)
 [![gitter.im](https://img.shields.io/gitter/room/fakesharper/community?style=flat-square)](https://gitter.im/fakesharper/community)
-[![patreon](https://img.shields.io/badge/patreon-donate-green.svg?style=flat-square)](https://www.patreon.com/jaqra)
 ![license](https://img.shields.io/github/license/fakesharper/fakesharper?style=flat-square)
 
 This is vscode extension for (free) ReSharper.
