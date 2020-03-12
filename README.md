@@ -1,6 +1,6 @@
 # fakesharper
 
-![CI](https://github.com/fakesharper/fakesharper/workflows/CI/badge.svg)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/fakesharper/fakesharper/CI?logo=github&style=flat-square)
 [![marketplace](https://img.shields.io/visual-studio-marketplace/v/fakesharper.fakesharper?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=fakesharper.fakesharper)
 [![gitter.im](https://img.shields.io/gitter/room/fakesharper/community?style=flat-square)](https://gitter.im/fakesharper/community)
 ![license](https://img.shields.io/github/license/fakesharper/fakesharper?style=flat-square)
