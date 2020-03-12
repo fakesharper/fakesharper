@@ -15,12 +15,14 @@ export class InspectCodeExecutor {
 	private showStatusBarItem(): void {
 		this.statusBarItem.text = "$(sync~spin) Inspect Code";
 		this.statusBarItem.tooltip = "Inspect Code command is running";
+		this.statusBarItem.command = `${EXTENSION_NAME}.showoutput`;
 		this.statusBarItem.show();
 	};
 
 	private hideStatusBarItem(): void {
 		this.statusBarItem.text = EXTENSION_NAME;
 		this.statusBarItem.tooltip = undefined;
+		this.statusBarItem.command = undefined;
 		this.statusBarItem.hide();
 	}
 
@@ -73,12 +75,14 @@ export class CleanupCodeExecutor {
 	private showStatusBarItem() {
 		this.statusBarItem.text = "$(sync~spin) Cleanup Code";
 		this.statusBarItem.tooltip = "Cleanup Code command is running";
+		this.statusBarItem.command = `${EXTENSION_NAME}.showoutput`;
 		this.statusBarItem.show();
 	}
 
 	private hideStatusBarItem() {
 		this.statusBarItem.text = EXTENSION_NAME;
 		this.statusBarItem.tooltip = undefined;
+		this.statusBarItem.command = undefined;
 		this.statusBarItem.hide();
 	}
 

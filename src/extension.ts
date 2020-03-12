@@ -9,6 +9,10 @@ export function activate(context: vscode.ExtensionContext) {
 	const output = vscode.window.createOutputChannel(EXTENSION_NAME);
 	const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
 
+	let disposableShowOutput = vscode.commands.registerCommand(`${EXTENSION_NAME}.showoutput`, () => {
+		output.show();
+	});
+
 	let disposable = vscode.commands.registerCommand(`${EXTENSION_NAME}.inspectcode`, () => {
 		new InspectCodeExecutor(output, statusBarItem, diagnosticCollection).run();
 	});
@@ -38,6 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		output,
 		statusBarItem,
+		disposableShowOutput,
 		disposable,
 		disposable2,
 		disposable3,
