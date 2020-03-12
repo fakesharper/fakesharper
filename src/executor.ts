@@ -1,4 +1,4 @@
-import { exec } from 'child_process';
+import { spawn } from 'child_process';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { EXTENSION_NAME, INSPECTION_FILENAME } from './constants';
@@ -7,6 +7,7 @@ import { loadDiagnostics } from './diagnostics';
 
 export class InspectCodeExecutor {
 	constructor(
+		private readonly output: vscode.OutputChannel,
 		private readonly statusBarItem: vscode.StatusBarItem,
 		private readonly diagnosticCollection: vscode.DiagnosticCollection
 	) { }
@@ -24,16 +25,26 @@ export class InspectCodeExecutor {
 	}
 
 	private executeInspectCode(filePath: string, xmlPath: string): void {
-		exec(`inspectcode ${filePath} --output=${xmlPath}`, (error, stdout) => {
-			if (error) {
+		this.output.appendLine(`Inspect Code command is running for '${filePath}'...`);
+
+		const cp = spawn('inspectcode', [filePath, `--output=${xmlPath}`]);
+
+		cp.stdin?.addListener('data', message => this.output.append(message.toString()));
+		cp.stdout?.addListener('data', message => this.output.append(message.toString()));
+		cp.stderr?.addListener('data', message => this.output.append(message.toString()));
+
+		cp.on('exit', code => {
+			if (code !== 0) {
+				vscode.window.showErrorMessage(`Process did not exit with 0 code. Please check output.`);
 				this.statusBarItem.hide();
-				vscode.window.showErrorMessage(error.message);
 			} else {
 				const dirPath = path.dirname(filePath);
 
 				this.diagnosticCollection.clear();
 				loadDiagnostics(dirPath, this.diagnosticCollection);
+
 				this.hideStatusBarItem();
+				this.output.appendLine('Fnished Inspect Code command.');
 			}
 		});
 	}
@@ -55,6 +66,7 @@ export class InspectCodeExecutor {
 
 export class CleanupCodeExecutor {
 	public constructor(
+		private readonly output: vscode.OutputChannel,
 		private readonly statusBarItem: vscode.StatusBarItem
 	) { }
 
@@ -71,12 +83,21 @@ export class CleanupCodeExecutor {
 	}
 
 	private executeCleanupCode(filePath: string): void {
-		exec(`cleanupcode ${filePath}`, (error, stdout) => {
-			if (error) {
-				vscode.window.showErrorMessage(error.message);
+		this.output.appendLine(`Cleanup Code command is running for '${filePath}'...`);
+
+		const cp = spawn('cleanupcode', [filePath]);
+
+		cp.stdin?.addListener('data', message => this.output.append(message.toString()));
+		cp.stdout?.addListener('data', message => this.output.append(message.toString()));
+		cp.stderr?.addListener('data', message => this.output.append(message.toString()));
+
+		cp.on('exit', code => {
+			if (code !== 0) {
+				vscode.window.showErrorMessage(`Process did not exit with 0 code. Please check output.`);
 			}
 
 			this.hideStatusBarItem();
+			this.output.appendLine('Fnished Cleanup Code command.');
 		});
 	}
 
