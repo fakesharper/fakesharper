@@ -7,9 +7,15 @@
 
 This is vscode extension for (free) ReSharper.
 
+> Warning: If your project is too large, this command can work slowly, because of cli tool. This is why we made this extension as command.
+
+## Inspect Code
+
 ![example](https://raw.githubusercontent.com/fakesharper/fakesharper/master/assets/example.gif)
 
-> Warning: If your project is too large, this command can work slowly, because of cli tool. This is why we made this extension as command.
+## Dupfinder
+
+![example](https://raw.githubusercontent.com/fakesharper/fakesharper-assets/master/dupfinder.gif)
 
 ## Requirements
 
