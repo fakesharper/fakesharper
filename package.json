@@ -3,7 +3,7 @@
 	"publisher": "fakesharper",
 	"displayName": "fakesharper",
 	"description": "ReSharper features for Visual Studio Code",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"preview": true,
 	"icon": "assets/icon.png",
 	"repository": {
@@ -27,6 +27,7 @@
 		"resharper"
 	],
 	"activationEvents": [
+		"workspaceContains:**/*.sln",
 		"onCommand:fakesharper.inspectcode",
 		"onCommand:fakesharper.cleandiagnostics",
 		"onCommand:fakesharper.cleanalldiagnostics",
@@ -55,8 +56,62 @@
 			{
 				"command": "fakesharper.reloaddiagnostics",
 				"title": "[fakesharper] Reload Diagnostics"
+			},
+			{
+				"command": "fakesharper.dupfinder.run",
+				"title": "[fakesharper] Run Dupfinder"
+			},
+			{
+				"command": "fakesharper.dupfinder.clean",
+				"title": "[fakesharper] Clean Duplicates"
 			}
-		]
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "fakesharper",
+					"title": "fakesharper",
+					"icon": "resources/icon/csharp.svg"
+				}
+			]
+		},
+		"views": {
+			"fakesharper": [
+				{
+					"id": "dupfinder",
+					"name": "Dupfinder"
+				}
+			]
+		},
+		"menus": {
+			"view/title": [
+				{
+					"command": "fakesharper.dupfinder.run",
+					"when": "view == dupfinder",
+					"group": "dupfinder"
+				},
+				{
+					"command": "fakesharper.dupfinder.clean",
+					"when": "view == dupfinder",
+					"group": "dupfinder"
+				},
+				{
+					"command": "fakesharper.cleanupcode",
+					"when": "view == dupfinder",
+					"group": "cleanupcode"
+				},
+				{
+					"command": "fakesharper.inspectcode",
+					"when": "view == dupfinder",
+					"group": "inspectcode"
+				},
+				{
+					"command": "fakesharper.cleanalldiagnostics",
+					"when": "view == dupfinder",
+					"group": "inspectcode"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",

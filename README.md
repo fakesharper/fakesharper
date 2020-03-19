@@ -26,6 +26,8 @@ This is vscode extension for (free) ReSharper.
 * `Clean All Diagnostics`: Clean all diagnostics on workspace.
 * `Reload Diagnostics`: Show diagnostics on editor from all found inspectcode.xml files.
 * `Cleanup Code`: Format and cleanup code.
+* `Run Dupfinder`: Find duplicates in code.
+* `Clean Duplicates`: Clean duplicates tree.
 
 ## FAQ
 
