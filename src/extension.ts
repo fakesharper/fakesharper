@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import { EXTENSION_NAME } from './constants';
-import { reloadAllDiagnostics } from './diagnostics';
-import { CleanupCodeExecutor, InspectCodeExecutor } from './executor';
+import { reloadAllDiagnostics } from './modules/inspectcode/diagnostics';
+import { InspectCodeExecutor } from './modules/inspectcode/executor';
+import { CleanupCodeExecutor } from './modules/cleancode/executor';
 import { DupfinderExecutor } from './modules/dupfinder/executor';
 import { Fragment } from './modules/dupfinder/models';
 import { DupfinderTreeDataProvider } from './modules/dupfinder/tree';

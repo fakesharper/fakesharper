@@ -1,8 +1,8 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 
-export function findFiles(glob: vscode.GlobPattern, maxResults?: number): Thenable<vscode.Uri[]> {
-	return vscode.workspace.findFiles(glob, '**/node_modules/**', maxResults);
+export function findFiles(glob: vscode.GlobPattern, maxResults?: number, token?: vscode.CancellationToken | undefined): Thenable<vscode.Uri[]> {
+	return vscode.workspace.findFiles(glob, '**/node_modules/**', maxResults, token);
 }
 
 export function selectFile(glob: vscode.GlobPattern, onSelect: ((path: string | undefined) => void)): void {

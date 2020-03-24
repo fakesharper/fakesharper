@@ -1,5 +1,6 @@
 import * as fs from 'fs';
-import { BOM_CHAR_CODE } from './constants';
+
+export const BOM_CHAR_CODE: number = 65279;
 
 /**
  * Synchronously reads the entire contents of a file.
@@ -10,6 +11,10 @@ import { BOM_CHAR_CODE } from './constants';
 export function readFileSync(path: string): string {
 	let data: string = fs.readFileSync(path).toString();
 
+	return removeBOM(data);
+}
+
+export function removeBOM(data: string): string {
 	if (data.length > 0 && data.charCodeAt(0) === BOM_CHAR_CODE) {
 		data = data.substring(1);
 	}

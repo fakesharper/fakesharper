@@ -1,6 +1,6 @@
 import * as fxp from 'fast-xml-parser';
 import * as path from 'path';
-import * as file from './file';
+import * as file from '../../utils/file';
 import { IssueType, Issue, File } from "./models";
 
 /**

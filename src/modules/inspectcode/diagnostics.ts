@@ -2,11 +2,11 @@ import * as fs from "fs";
 import { EOL } from "os";
 import * as path from "path";
 import * as vscode from "vscode";
-import { EXTENSION_NAME, INSPECTION_FILENAME } from "./constants";
-import { readFileSync } from './file';
+import { EXTENSION_NAME, INSPECTION_FILENAME } from "../../constants";
+import { readFileSync } from '../../utils/file';
 import { File } from "./models";
 import { getIssueRange, getIssueSeverity, restoreRelativePaths } from "./utils";
-import { findFiles } from './workspace';
+import { findFiles } from '../../utils/workspace';
 import { parsefile } from "./xmlparser";
 
 export function reloadAllDiagnostics(diagnosticCollection: vscode.DiagnosticCollection) {

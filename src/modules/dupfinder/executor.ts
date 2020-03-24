@@ -2,7 +2,7 @@ import { spawn } from 'child_process';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { DUPFINDER_FILENAME, EXTENSION_NAME } from '../../constants';
-import { selectSolutionFile } from '../../workspace';
+import { selectSolutionFile } from '../../utils/workspace';
 import { DupfinderTreeDataProvider } from './tree';
 import { parsefile } from './parser';
 

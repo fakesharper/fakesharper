@@ -1,5 +1,5 @@
 import * as fxp from 'fast-xml-parser';
-import * as file from '../../file';
+import * as file from '../../utils/file';
 import { Duplicate, DuplicatesReport } from "./models";
 
 export function parsefile(path: string): DuplicatesReport {
