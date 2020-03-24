@@ -41,6 +41,10 @@ This is vscode extension for (free) ReSharper.
 
 **Yes!** We use free tool of [JetBrains](https://www.jetbrains.com/) [ReSharper](https://www.jetbrains.com/resharper/) called [ReSharper Command Line](https://www.jetbrains.com/resharper/features/command-line.html) tool for this extension.
 
+### Does this extension make Visual Studio Code slower?
+
+**No!** Currently fakesharper works as command. This extension works only when you run any command.
+
 -----------------------------------------------------------------------------------------------------------
 
 ## Thanks
