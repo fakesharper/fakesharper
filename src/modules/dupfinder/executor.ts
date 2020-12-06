@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { DUPFINDER_FILENAME, EXTENSION_NAME } from '../../constants';
+import { DUPFINDER_FILENAME, EXTENSION_NAME, DUPFINDER_COMMAND } from '../../constants';
 import { selectSolutionFile } from '../../utils/workspace';
 import { DupfinderTreeDataProvider } from './tree';
 import { parsefile } from './parser';
@@ -32,8 +32,9 @@ export class DupfinderExecutor {
 
 		const wd: string = path.dirname(filePath);
 
-		const cp = spawn('dupfinder', [filePath, `--output=${xmlPath}`], {
-			cwd: wd
+		const cp = spawn(DUPFINDER_COMMAND, [filePath, `--output=${xmlPath}`], {
+			cwd: wd,
+			shell: true
 		});
 
 		cp.stdin?.addListener('data', message => this.output.append(message.toString()));

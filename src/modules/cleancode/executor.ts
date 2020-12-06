@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
 import * as vscode from 'vscode';
-import { EXTENSION_NAME } from '../../constants';
+import { EXTENSION_NAME, CLEANCODE_COMMAND } from '../../constants';
 import { selectSolutionFile } from '../../utils/workspace';
 
 export class CleanupCodeExecutor {
@@ -26,7 +26,7 @@ export class CleanupCodeExecutor {
 	private executeCleanupCode(filePath: string): void {
 		this.output.appendLine(`Cleanup Code command is running for '${filePath}'...`);
 
-		const cp = spawn('cleanupcode', [filePath]);
+		const cp = spawn(CLEANCODE_COMMAND, [filePath], { shell: true});
 
 		cp.stdin?.addListener('data', message => this.output.append(message.toString()));
 		cp.stdout?.addListener('data', message => this.output.append(message.toString()));
