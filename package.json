@@ -39,31 +39,38 @@
 		"commands": [
 			{
 				"command": "fakesharper.inspectcode",
-				"title": "[fakesharper] Inspect Code"
+				"title": "Inspect Code",
+				"category": "FakeSharper"
 			},
 			{
 				"command": "fakesharper.cleandiagnostics",
-				"title": "[fakesharper] Clean Diagnostics"
+				"title": "Clean Diagnostics",
+				"category": "FakeSharper"
 			},
 			{
 				"command": "fakesharper.cleanalldiagnostics",
-				"title": "[fakesharper] Clean All Diagnostics"
+				"title": "Clean All Diagnostics",
+				"category": "FakeSharper"
 			},
 			{
 				"command": "fakesharper.cleanupcode",
-				"title": "[fakesharper] Cleanup Code"
+				"title": "Cleanup Code",
+				"category": "FakeSharper"
 			},
 			{
 				"command": "fakesharper.reloaddiagnostics",
-				"title": "[fakesharper] Reload Diagnostics"
+				"title": "Reload Diagnostics",
+				"category": "FakeSharper"
 			},
 			{
 				"command": "fakesharper.dupfinder.run",
-				"title": "[fakesharper] Run Dupfinder"
+				"title": "Run Dupfinder",
+				"category": "FakeSharper"
 			},
 			{
 				"command": "fakesharper.dupfinder.clean",
-				"title": "[fakesharper] Clean Duplicates"
+				"title": "Clean Duplicates",
+				"category": "FakeSharper"
 			}
 		],
 		"viewsContainers": {

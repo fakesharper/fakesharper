@@ -6,6 +6,7 @@ import { CleanupCodeExecutor } from './modules/cleancode/executor';
 import { DupfinderExecutor } from './modules/dupfinder/executor';
 import { Fragment } from './modules/dupfinder/models';
 import { DupfinderTreeDataProvider } from './modules/dupfinder/tree';
+import { JetBrainsInstaller } from './utils/jetbrainsinstaller';
 
 export function activate(context: vscode.ExtensionContext) {
 	const diagnosticCollection = vscode.languages.createDiagnosticCollection(EXTENSION_NAME);
@@ -14,6 +15,9 @@ export function activate(context: vscode.ExtensionContext) {
 	const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
 
 	const dataProvider = new DupfinderTreeDataProvider();
+
+	const jbInstaller = new JetBrainsInstaller(output);
+	jbInstaller.verifyInstallation();
 
 	const tree = vscode.window.createTreeView(`dupfinder`, {
 		canSelectMany: false,

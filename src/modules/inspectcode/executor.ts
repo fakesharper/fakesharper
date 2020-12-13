@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { EXTENSION_NAME, INSPECTION_FILENAME } from '../../constants';
+import { EXTENSION_NAME, INSPECTION_FILENAME, INSPECTION_COMMAND } from '../../constants';
 import { selectSolutionFile } from '../../utils/workspace';
 import { loadDiagnostics } from './diagnostics';
 
@@ -29,7 +29,7 @@ export class InspectCodeExecutor {
 	private executeInspectCode(filePath: string, xmlPath: string): void {
 		this.output.appendLine(`Inspect Code command is running for '${filePath}'...`);
 
-		const cp = spawn('inspectcode', [filePath, `--output=${xmlPath}`]);
+		const cp = spawn(INSPECTION_COMMAND, [filePath, `--output=${xmlPath}`], { shell: true });
 
 		cp.stdin?.addListener('data', message => this.output.append(message.toString()));
 		cp.stdout?.addListener('data', message => this.output.append(message.toString()));
