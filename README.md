@@ -19,11 +19,7 @@ This is vscode extension for (free) ReSharper.
 
 ## Requirements
 
-* [ReSharper Command Line](https://www.jetbrains.com/resharper/features/command-line.html) tool:
-  * Download from [here](https://www.jetbrains.com/resharper/download/#section=commandline).
-  * Extract files to any folder.
-  * Add folder to environment PATH variable.
-  * Check if installed correctly by `inspectcode --version` command on command line.
+* Nothing... fakesharper will automatically install jetbrains tool.
 
 ## Features
 
