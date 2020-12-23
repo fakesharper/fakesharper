@@ -3,8 +3,8 @@
 	"publisher": "fakesharper",
 	"displayName": "fakesharper",
 	"description": "ReSharper features for Visual Studio Code",
-	"version": "0.3.0",
-	"preview": true,
+	"version": "1.0.0",
+	"preview": false,
 	"icon": "assets/icon.png",
 	"repository": {
 		"type": "git",
