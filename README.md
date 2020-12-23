@@ -49,6 +49,7 @@ This is vscode extension for (free) ReSharper.
 
 ## Thanks
 
-[JetBrains](https://www.jetbrains.com/) for the free awesome [ReSharper](https://www.jetbrains.com/resharper/) [Command Line](https://www.jetbrains.com/resharper/features/command-line.html) tool.
+- [JetBrains](https://www.jetbrains.com/) for the free awesome [ReSharper](https://www.jetbrains.com/resharper/) [Command Line](https://www.jetbrains.com/resharper/features/command-line.html) tool.
+- @javis86 For adding JetBrains dotnet tools installation feature [#15]
 
 **Enjoy!**
