@@ -11,14 +11,9 @@ export class DupfinderTreeItem extends vscode.TreeItem {
 		public readonly childs: DupfinderTreeItem[]
 	) {
 		super(label, collapsibleState);
-	}
 
-	public get description(): string {
-		return path.basename(this.fileName);
-	}
-
-	public get tooltip(): string {
-		return this.fileName;
+		this.description = path.basename(this.fileName);
+		this.tooltip = this.fileName;
 	}
 }
 
@@ -34,7 +29,7 @@ export class DupfinderTreeDataProvider implements vscode.TreeDataProvider<Dupfin
 	}
 
 	public refresh(): void {
-		this._onDidChangeTreeData.fire();
+		this._onDidChangeTreeData.fire(undefined);
 	}
 
 	public getTreeItem(element: DupfinderTreeItem): vscode.TreeItem {
@@ -62,7 +57,6 @@ export class DupfinderTreeDataProvider implements vscode.TreeDataProvider<Dupfin
 
 	private createFragmentItems(duplicate: Duplicate): DupfinderTreeItem[] {
 		const item1 = new DupfinderTreeItem('Fragment 1', duplicate.fragment1.fileName, vscode.TreeItemCollapsibleState.None, []);
-		// item1.description = duplicate.fragment1.fileName;
 		item1.command = {
 			command: `${EXTENSION_NAME}.dupfinder.show`,
 			title: 'Show duplicates',
@@ -70,7 +64,6 @@ export class DupfinderTreeDataProvider implements vscode.TreeDataProvider<Dupfin
 		};
 
 		const item2 = new DupfinderTreeItem('Fragment 2', duplicate.fragment2.fileName, vscode.TreeItemCollapsibleState.None, []);
-		// item1.description = duplicate.fragment2.fileName;
 		item2.command = {
 			command: `${EXTENSION_NAME}.dupfinder.show`,
 			title: 'Show duplicates',
